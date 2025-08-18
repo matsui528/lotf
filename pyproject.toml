@@ -54,10 +54,14 @@ test-requires = "pytest"
 # Install Boost unordered headers only on Linux for optimal performance
 [tool.cibuildwheel.linux]
 before-all = [
-    "echo '=== Installing Boost headers on Linux ==='",
-    "apt-get update && apt-get install -y libboost-dev || yum install -y boost-devel || echo 'Boost install failed, using std fallback'",
+    "echo '=== Installing latest Boost headers on Linux ==='",
+    # Auto-detect and download latest Boost version
+    "BOOST_VERSION=$(curl -s https://api.github.com/repos/boostorg/boost/releases/latest | grep -o 'boost-[0-9]\\+\\.[0-9]\\+\\.[0-9]\\+' | head -1) || BOOST_VERSION='boost-1.84.0'",
+    "echo \"Downloading Boost version: $BOOST_VERSION\"",
+    "curl -L \"https://github.com/boostorg/boost/releases/download/$BOOST_VERSION/$BOOST_VERSION.tar.gz\" | tar xz || echo 'Boost download failed'",
+    "cp -r \"$BOOST_VERSION/boost\" /usr/local/include/ || echo 'Manual boost install failed'",
     "echo '=== Checking Boost installation ==='", 
-    "find /usr -name 'unordered_flat_map.hpp' 2>/dev/null || echo 'Boost headers search completed'",
+    "find /usr/local -name 'unordered_flat_map.hpp' 2>/dev/null && echo 'Latest Boost with unordered_flat_map found!' || echo 'Using std containers fallback'",
     "echo '=== Linux Boost setup complete ==='",
 ]
 
