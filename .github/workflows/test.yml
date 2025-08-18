@@ -1,0 +1,72 @@
+# CI workflow to test the package across multiple platforms and Python versions
+name: Test with Conda
+
+on:
+  workflow_dispatch:  # Allow manual triggering
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Test with Conda
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false  # Continue testing other combinations if one fails
+      matrix:
+        platform: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: ["3.10", "3.12"]
+
+    steps:
+    # Check out the repository code
+    - uses: actions/checkout@v4
+
+    # Set up Miniconda environment with specified Python version
+    - name: Set up Miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+        mamba-version: "*"
+        channels: conda-forge,defaults
+        channel-priority: true
+
+    # Set minimum macOS deployment target for compatibility
+    - name: Set min macOS version
+      if: runner.os == 'macOS'
+      run: |
+        echo "MACOSX_DEPLOYMENT_TARGET=10.14" >> $GITHUB_ENV
+
+    # Install boost library for C++ performance optimizations on Ubuntu
+    - name: Install boost on Ubuntu
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt update
+        sudo apt install libboost-dev
+
+    # Install build dependencies with platform-specific handling
+    - name: Install build dependencies
+      shell: bash -el {0}
+      run: |
+        if [ "${{ runner.os }}" == "Windows" ]; then
+          # On Windows, use pip for Faiss (unofficial package) as mamba version may have DLL issues
+          mamba install pip numpy
+          pip install faiss-cpu
+        else
+          # On Linux/macOS, use mamba as usual
+          mamba install faiss-cpu pip
+        fi
+        pip install pytest nanobind "scikit-build-core>=0.10"
+
+    # Install the package in development mode
+    - name: Install package
+      shell: bash -el {0}
+      run: |
+        make install_dev
+
+    # Run tests and verify backend functionality
+    - name: Test
+      shell: bash -el {0}
+      run: |
+        python -c "import lotf; lotf.print_backend()"
+        python -m pytest tests

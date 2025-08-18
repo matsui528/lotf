@@ -1,0 +1,73 @@
+# CI workflow to build and deploy Sphinx documentation to GitHub Pages
+# Triggers on push/PR to main branch and can be manually triggered
+name: Build and Deploy Documentation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Allow manual triggering
+
+permissions:
+  contents: read
+  pages: write      # Required to deploy to GitHub Pages
+  id-token: write   # Required for authentication with GitHub Pages
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false  # Don't cancel in-progress deployments
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Check out the repository code
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    # Set up Python environment for building docs
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    # Install system dependencies needed for building the package
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential
+        
+    # Install Python dependencies for documentation generation
+    - name: Install Python dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -e .[docs]
+        pip install faiss-cpu  # For API documentation generation
+        
+    # Build Sphinx documentation
+    - name: Build documentation
+      run: |
+        cd docs
+        sphinx-build -b html . _build/html
+        
+    # Upload built documentation as artifact for GitHub Pages
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: docs/_build/html
+
+  # Deploy job only runs on main branch pushes
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      # Deploy the built documentation to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

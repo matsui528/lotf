@@ -1,0 +1,89 @@
+# CI workflow to build Python wheels and source distribution for PyPI release
+# Builds cross-platform wheels using cibuildwheel and uploads to PyPI on release
+name: Wheels
+
+on:
+  workflow_dispatch:  # Allow manual triggering for testing
+  pull_request:       # Build wheels on PR to test (but don't upload)
+  push:
+    branches:
+     - main            # Build wheels on main branch (but don't upload)
+  release:
+    types:
+      - published     # Upload to PyPI only when GitHub release is published
+
+jobs:
+  build_sdist:
+    name: Build SDist
+    runs-on: ubuntu-latest
+    steps:
+    # Check out repository with submodules for complete source
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    # Build source distribution using modern build tool
+    - name: Build SDist
+      run: pipx run build --sdist
+
+    # Validate package metadata for PyPI compliance
+    - name: Check metadata
+      run: pipx run twine check dist/*
+
+    # Upload source distribution as artifact
+    - uses: actions/upload-artifact@v4
+      with:
+        name: dist-sdist
+        path: dist/*.tar.gz
+
+
+  build_wheels:
+    name: Wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false  # Build all platforms even if one fails
+      matrix:
+        os: [ubuntu-latest, macos-13, macos-14, windows-latest]  # macOS 13 (Intel), 14 (ARM)
+
+    steps:
+    # Check out repository with submodules for C++ extensions
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    # Build wheels for multiple Python versions and architectures
+    - uses: pypa/cibuildwheel@v3.0
+
+    # Ensure build process didn't modify source files
+    - name: Verify clean directory
+      run: git diff --exit-code
+      shell: bash
+
+    # Upload built wheels as artifacts
+    - name: Upload wheels
+      uses: actions/upload-artifact@v4
+      with:
+        path: wheelhouse/*.whl
+        name: dist-${{ matrix.os }}
+
+  # Upload to PyPI only when a GitHub release is published
+  upload_all:
+    name: Upload if release
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+    
+    # Enable PyPI trusted publishing (no API token needed)
+    permissions:
+      id-token: write
+
+    steps:
+    # Download all built artifacts (wheels and sdist)
+    - uses: actions/download-artifact@v4
+      with:
+        path: dist
+        pattern: dist-*
+        merge-multiple: true
+
+    # Upload to PyPI using trusted publishing (modern approach)
+    - uses: pypa/gh-action-pypi-publish@release/v1
