@@ -4,7 +4,7 @@
 
 [![PyPI version](https://badge.fury.io/py/lotf.svg)](https://badge.fury.io/py/lotf)
 [![Documentation](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://matsui528.github.io/lotf)
-[![CI](https://github.com/matsui528/lotf/workflows/CI/badge.svg)](https://github.com/matsui528/lotf/actions)
+[![CI](https://github.com/matsui528/lotf/workflows/Test%20with%20Conda/badge.svg)](https://github.com/matsui528/lotf/actions)
 
 **LotusFilter**: Diversity-aware approximate nearest neighbor search combining Faiss with cutoff tables to prevent similar results from dominating search outputs.
 
