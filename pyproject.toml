@@ -65,23 +65,28 @@ before-all = [
     "echo '=== Linux Boost setup complete ==='",
 ]
 
-# Install Boost on macOS for optimal performance  
+# Install latest Boost headers on macOS
 [tool.cibuildwheel.macos]
 before-all = [
-    "echo '=== Installing Boost on macOS ==='",
-    "brew install boost || echo 'Boost install failed, using std fallback'",
+    "echo '=== Installing latest Boost headers on macOS ==='",
+    # Auto-detect and download latest Boost version
+    "BOOST_VERSION=$(curl -s https://api.github.com/repos/boostorg/boost/releases/latest | grep -o 'boost-[0-9]\\+\\.[0-9]\\+\\.[0-9]\\+' | head -1) || BOOST_VERSION='boost-1.84.0'",
+    "echo \"Downloading Boost version: $BOOST_VERSION\"",
+    "curl -L \"https://github.com/boostorg/boost/releases/download/$BOOST_VERSION/$BOOST_VERSION.tar.gz\" | tar xz || echo 'Boost download failed'",
+    "cp -r \"$BOOST_VERSION/boost\" /usr/local/include/ || echo 'Manual boost install failed'",
     "echo '=== Checking Boost installation ==='",
-    "find /usr/local -name 'unordered_flat_map.hpp' 2>/dev/null || echo 'Boost headers search completed'",
+    "find /usr/local -name 'unordered_flat_map.hpp' 2>/dev/null && echo 'Latest Boost with unordered_flat_map found!' || echo 'Using std containers fallback'",
     "echo '=== macOS Boost setup complete ==='",
 ]
 environment = { MACOSX_DEPLOYMENT_TARGET = "10.14" }
 
-# Install Boost unordered headers only on Windows for optimal performance
+# Install latest Boost headers on Windows
 [tool.cibuildwheel.windows]
 before-all = [
-    "echo === Installing Boost unordered headers on Windows ===",
-    "vcpkg install boost-unordered:x64-windows || vcpkg install boost:x64-windows || echo Boost install failed, using std fallback",
-    "echo === Windows Boost unordered setup complete ===",
+    "echo === Installing latest Boost headers on Windows ===",
+    # Auto-detect and install latest Boost version
+    "powershell -Command \"try { $v = (Invoke-RestMethod 'https://api.github.com/repos/boostorg/boost/releases/latest').tag_name; Write-Host \\\"Downloading Boost $v\\\"; Invoke-WebRequest \\\"https://github.com/boostorg/boost/releases/download/$v/$v.tar.gz\\\" -OutFile boost.tar.gz; tar xzf boost.tar.gz; Copy-Item \\\"$v/boost\\\" -Destination \\\"C:/boost/include\\\" -Recurse -Force; Write-Host \\\"Latest Boost installed successfully\\\" } catch { Write-Host \\\"Boost install failed, using std fallback\\\" }\"",
+    "echo === Windows Boost setup complete ===",
 ]
 
 [tool.ruff]
