@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "lotf"
-version = "0.0.1"
+version = "0.0.2.dev1"
 description = "LotusFilter: Diversity-aware approximate nearest neighbor search"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -54,11 +54,11 @@ test-requires = "pytest"
 # Install Boost unordered headers only on Linux for optimal performance
 [tool.cibuildwheel.linux]
 before-all = [
-    "echo '=== Installing Boost unordered headers on Linux ==='",
-    "yum install -y boost-unordered-devel || apt-get update && apt-get install -y libboost-unordered-dev || (echo 'Lightweight boost-unordered not available, installing libboost-dev' && apt-get install -y libboost-dev)",
-    "echo '=== Checking Boost unordered installation ==='", 
-    "find /usr -name 'unordered_flat_map.hpp' 2>/dev/null || echo 'Boost unordered headers search completed'",
-    "echo '=== Linux Boost unordered setup complete ==='",
+    "echo '=== Installing Boost headers on Linux ==='",
+    "apt-get update && apt-get install -y libboost-dev || yum install -y boost-devel || echo 'Boost install failed, using std fallback'",
+    "echo '=== Checking Boost installation ==='", 
+    "find /usr -name 'unordered_flat_map.hpp' 2>/dev/null || echo 'Boost headers search completed'",
+    "echo '=== Linux Boost setup complete ==='",
 ]
 
 # Install Boost on macOS for optimal performance  

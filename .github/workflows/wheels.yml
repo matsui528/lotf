@@ -4,13 +4,9 @@ name: Wheels
 
 on:
   workflow_dispatch:  # Allow manual triggering for testing
-  pull_request:       # Build wheels on PR to test (but don't upload)
-  push:
-    branches:
-     - main            # Build wheels on main branch (but don't upload)
   release:
     types:
-      - published     # Upload to PyPI only when GitHub release is published
+      - published     # Build and upload to PyPI only when GitHub release is published
 
 jobs:
   build_sdist:
