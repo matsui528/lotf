@@ -1,5 +1,5 @@
 # CI workflow to test the package across multiple platforms and Python versions
-name: Test with Conda
+name: Tests
 
 on:
   workflow_dispatch:  # Allow manual triggering

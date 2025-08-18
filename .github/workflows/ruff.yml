@@ -1,7 +1,7 @@
 # CI workflow for code quality with Ruff - check on PR, auto-fix on main
 # PRs: Check code style and fail if issues found
 # Main branch: Check, fix automatically, and commit changes
-name: Code Quality (Ruff)
+name: Code Quality
 
 on:
   push:

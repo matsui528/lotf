@@ -1,6 +1,6 @@
 # CI workflow to build Python wheels and source distribution for PyPI release
 # Builds cross-platform wheels using cibuildwheel and uploads to PyPI on release
-name: Wheels
+name: Release
 
 on:
   workflow_dispatch:  # Allow manual triggering for testing

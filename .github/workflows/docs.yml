@@ -1,6 +1,6 @@
 # CI workflow to build and deploy Sphinx documentation to GitHub Pages
 # Triggers on push/PR to main branch and can be manually triggered
-name: Build and Deploy Documentation
+name: Documentation
 
 on:
   push:
