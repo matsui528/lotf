@@ -28,8 +28,8 @@ def test_version_format():
     """Test that version follows semantic versioning pattern."""
     import lotf
 
-    # Should match basic semantic version pattern (with optional suffix)
-    version_pattern = r"^\d+\.\d+\.\d+(-\w+)?$"
+    # Should match PEP 440 version pattern (semantic version with optional dev/alpha/beta/rc)
+    version_pattern = r"^\d+\.\d+\.\d+(?:\.(?:dev|a|b|rc)\d+|[-+]\w+)?$"
     assert re.match(version_pattern, lotf.__version__), (
         f"Version '{lotf.__version__}' does not match expected pattern"
     )
@@ -46,7 +46,7 @@ def test_version_reasonable():
     # Should either be a proper semantic version or development version
     import re
 
-    version_pattern = r"^\d+\.\d+\.\d+(-\w+)?$"
+    version_pattern = r"^\d+\.\d+\.\d+(?:\.(?:dev|a|b|rc)\d+|[-+]\w+)?$"
     assert re.match(version_pattern, lotf.__version__), (
         f"Version '{lotf.__version__}' does not follow expected pattern"
     )
