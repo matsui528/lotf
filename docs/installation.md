@@ -60,9 +60,12 @@ index.add(Xb)
 epsilon = 15.0
 ctable = lotf.CutoffTable(X=Xb, index=index, epsilon=epsilon)
 
-# Step 3: Search with diversity
-candidate_k, final_k = 300, 100
+# Step 3: Search candidates
+candidate_k = 300
 candidate_dists, candidate_ids = index.search(Xq, candidate_k)
+
+# Step 4: Filter out candidates to obtain diverse results
+final_k = 100
 diverse_dists, diverse_ids = ctable.filter(
     dists=candidate_dists, 
     ids=candidate_ids, 
@@ -79,6 +82,7 @@ print(f"Diverse results: {diverse_ids}")
 
 ### Prerequisites for Source Build
 - C++17 or later
+- [nanobind](https://github.com/wjakob/nanobind)
 - [Boost Unordered](https://www.boost.org/doc/libs/latest/libs/unordered/index.html)
     ```bash
     # Ubuntu 24.04+
