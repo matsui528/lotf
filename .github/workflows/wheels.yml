@@ -3,6 +3,7 @@
 name: Release
 
 on:
+  push:               # Trigger on push for testing
   workflow_dispatch:  # Allow manual triggering for testing
   release:
     types:
@@ -67,6 +68,13 @@ jobs:
       with:
         path: wheelhouse/*.whl
         name: dist-${{ matrix.os }}
+
+    # Test wheel installation and check backend configuration
+    - name: Test wheel and check Boost backend
+      run: |
+        python -m pip install wheelhouse/*.whl
+        python -c "import lotf; print('=== Backend Information ==='); lotf.print_backend()"
+      shell: bash
 
   # Upload to PyPI only when a GitHub release is published
   upload_all:

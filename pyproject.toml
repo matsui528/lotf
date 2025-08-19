@@ -67,24 +67,22 @@ before-all = [
 
 [tool.cibuildwheel.macos]
 before-all = [
-    "echo '=== Installing latest Boost headers ==='",
-    # Auto-detect latest Boost version from GitHub releases
-    "BOOST_VERSION=$(curl -s https://api.github.com/repos/boostorg/boost/releases/latest | grep -o 'boost-[0-9]\\+\\.[0-9]\\+\\.[0-9]\\+' | head -1)",
-    "echo \"Downloading Boost version: $BOOST_VERSION\"",
-    "curl -L \"https://github.com/boostorg/boost/releases/download/$BOOST_VERSION/$BOOST_VERSION-b2-nodocs.tar.gz\" | tar xz",
-    "cp -r \"$BOOST_VERSION/boost\" /usr/local/include/",
+    "echo '=== Installing Boost via Homebrew ==='",
+    "brew install boost",
     "echo '=== Checking Boost installation ==='",
-    "find /usr/local -name 'unordered_flat_map.hpp' 2>/dev/null && echo 'Latest Boost with unordered_flat_map found!' || echo 'Using std containers fallback'",
+    "find /usr/local -name 'unordered_flat_map.hpp' 2>/dev/null || find /opt/homebrew -name 'unordered_flat_map.hpp' 2>/dev/null && echo 'Boost with unordered_flat_map found!' || echo 'Using std containers fallback'",
     "echo '=== Boost setup complete ==='",
 ]
 environment = { MACOSX_DEPLOYMENT_TARGET = "10.14" }
 
-# Install latest Boost headers on Windows
+# Install Boost headers on Windows
 [tool.cibuildwheel.windows]
 before-all = [
-    "echo === Installing Boost unordered headers on Windows ===",
-    "vcpkg install boost-unordered:x64-windows || echo Boost install failed, using std fallback",
-    "echo === Windows Boost unordered setup complete ===",
+    "echo === Installing Boost via vcpkg ===",
+    "vcpkg install boost:x64-windows || echo Boost install failed, using std fallback",
+    "echo === Checking Boost installation ===",
+    "if exist \"C:\\vcpkg\\installed\\x64-windows\\include\\boost\\unordered\\unordered_flat_map.hpp\" (echo Boost with unordered_flat_map found!) else (echo Using std containers fallback)",
+    "echo === Boost setup complete ===",
 ]
 
 [tool.ruff]
