@@ -3,14 +3,11 @@
 ## Prerequisites
 
 - Python 3.10 or later
-- C++ 17 or later
 - [Faiss](https://github.com/facebookresearch/faiss) (CPU)
 
 ````{note}
 
-This library is for "post-processing" the approximate nearest neighbor search results using faiss.
-
-To install faiss, run the following using conda:
+This library is for "post-processing" for faiss. To install faiss, run the following using conda:
 
 ```bash
 conda install -c pytorch faiss-cpu
@@ -26,24 +23,7 @@ Even if Faiss cannot be used, as long as an interface emulating Faiss is prepare
 ````
 
 
-````{note}
-**For most users**: No additional dependencies are needed. The PyPI wheels are pre-built with optimal performance libraries.
 
-**For developers building from source**: Installing [Boost Unordered](https://www.boost.org/doc/libs/latest/libs/unordered/index.html) is recommended for better performance, but not required.
-
-You can check which backend is being used:
-
-```bash
-python -c "import lotf; lotf.print_backend()"
-```
-
-Expected output for PyPI installation:
-```
-div_score: Faiss  # or NumPy if Faiss not installed
-filter: boost::unordered_flat_map/set  # Pre-built with Boost optimization
-```
-
-````
 
 
 ## Install from PyPI
@@ -94,19 +74,40 @@ print(f"Diverse results: {diverse_ids}")
 ## Install from Source (for developers)
 
 ### Prerequisites for Source Build
+- C++17 or later
+- [Boost Unordered](https://www.boost.org/doc/libs/latest/libs/unordered/index.html)
+    ```bash
+    # Ubuntu 24.04+
+    sudo apt install libboost-dev
+    
+    # macOS (note tested)
+    brew install boost
+    
+    # Windows (with vcpkg)
+    vcpkg install boost:x64-windows
+    ```
 
-Optional but recommended for optimal performance:
+````{note}
+**For most users**: No additional dependencies are needed. The PyPI wheels are pre-built with Boost Unordered.
+
+**For developers building from source**: Installing Boost Unordered is recommended for better performance, but not required. If Boost is not available during source build, the package will automatically fall back to standard library containers. Performance will be slightly reduced but functionality remains identical.
+
+You can check which backend is being used:
 
 ```bash
-# Ubuntu/Debian
-sudo apt install libboost-dev
-
-# macOS
-brew install boost
-
-# Windows (with vcpkg)
-vcpkg install boost:x64-windows
+python -c "import lotf; lotf.print_backend()"
 ```
+
+Expected output for PyPI installation:
+```
+div_score: Faiss  # or NumPy if Faiss not installed
+filter: boost::unordered_flat_map/set  # Pre-built with Boost optimization
+```
+
+````
+
+
+
 
 ### Build and Install
 
@@ -115,7 +116,3 @@ git clone https://github.com/matsui528/lotf.git
 cd lotf
 make install_dev
 ```
-
-````{tip}
-If Boost is not available during source build, the package will automatically fall back to standard library containers. Performance will be slightly reduced but functionality remains identical.
-````
