@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "lotf"
-version = "0.0.2.dev3"
+version = "0.0.2"
 description = "LotusFilter: Diversity-aware approximate nearest neighbor search"
 readme = "README.md"
 requires-python = ">=3.10"
