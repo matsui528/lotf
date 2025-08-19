@@ -35,6 +35,10 @@ You can install the LousFilter via pip with the following command:
 pip install lotf
 ```
 
+````{note}
+We provide pre-built wheels for Linux (x86_64), macOS (Intel/ARM), and Windows. For other environments, installing via pip will build the library locally. In that case, as shown below, we recommend ensuring a C++17-capable toolchain and preparing Boost Unordered. Such cases apply to ARM64 Linux (e.g., AWS Graviton), PyPy, and older Linux distributions.
+````
+
 
 ## Quick Example
 If the installation is successful, you can run the following.
