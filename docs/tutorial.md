@@ -223,7 +223,7 @@ This parameter tuning may take time; reducing the number of pseudo-queries helps
 
 ## I/O
 
-CutoffTable can be read and written with `pickle`.
+CutoffTable can be read and written with `pickle`. CutoffTable consists of just numpy arrays and does not contain the original data and the nearest neighbor search index. As a result, it is easier to manage and requires less memory.
 
 ```python
 import pickle
