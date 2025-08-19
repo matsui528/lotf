@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     # Check out repository with submodules for complete source
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         submodules: true
 
@@ -43,12 +43,12 @@ jobs:
 
     steps:
     # Check out repository with submodules for C++ extensions
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         submodules: true
 
     # Build wheels for multiple Python versions and architectures
-    - uses: pypa/cibuildwheel@v3.0
+    - uses: pypa/cibuildwheel@v3.1
 
     # Ensure build process didn't modify source files
     - name: Verify clean directory
@@ -75,7 +75,7 @@ jobs:
 
     steps:
     # Download all built artifacts (wheels and sdist)
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v5
       with:
         path: dist
         pattern: dist-*
