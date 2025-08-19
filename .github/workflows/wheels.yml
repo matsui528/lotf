@@ -49,9 +49,6 @@ jobs:
 
     # Build wheels for multiple Python versions and architectures
     - uses: pypa/cibuildwheel@v3.1
-      env:
-        # Enable ARM64 builds on Linux for broader platform support
-        CIBW_ARCHS_LINUX: x86_64 aarch64
 
     # Ensure build process didn't modify source files
     - name: Verify clean directory
