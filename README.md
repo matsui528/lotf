@@ -13,9 +13,9 @@
 ## ✨ Features
 
 - ⚡ **Lightweight**: Ultra-fast processing < 0.1ms per query
-- 🔄 **Independence**: Post-processing module that doesn't require original data retention  
-- 🎯 **Flexibility**: Works seamlessly with various Faiss indexes
-- 🛠️ **Simplicity**: Single `CutoffTable` class - easy to integrate
+- 🔓 **Independence**: Post-processing module that doesn't require original data retention  
+- 🔧 **Flexibility**: Works seamlessly with various Faiss indexes
+- 📦 **Simplicity**: Single `CutoffTable` class - easy to integrate
 
 
 ## 🚀 Quick Start
