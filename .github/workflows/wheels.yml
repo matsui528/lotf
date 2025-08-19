@@ -69,11 +69,19 @@ jobs:
         path: wheelhouse/*.whl
         name: dist-${{ matrix.os }}
 
-    # Test wheel installation and check backend configuration
+    # Test wheel installation and check backend configuration  
     - name: Test wheel and check Boost backend
       run: |
-        python -m pip install wheelhouse/*.whl
-        python -c "import lotf; print('=== Backend Information ==='); lotf.print_backend()"
+        # Use python3 on macOS, python on others
+        if [[ "$RUNNER_OS" == "macOS" ]]; then
+          PYTHON_CMD="python3"
+        else
+          PYTHON_CMD="python"
+        fi
+        
+        $PYTHON_CMD -m pip install numpy
+        $PYTHON_CMD -m pip install wheelhouse/*.whl --force-reinstall --no-deps --no-index --find-links wheelhouse
+        $PYTHON_CMD -c "import lotf; print('=== Backend Information ==='); lotf.print_backend()"
       shell: bash
 
   # Upload to PyPI only when a GitHub release is published
