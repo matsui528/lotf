@@ -43,9 +43,9 @@ jobs:
         # - ubuntu-latest: ubuntu x64
         # - ubuntu-24.04-arm: ubuntu arm64
         # - macos-13: mac intel
-        # - macos-latest: mac arm64
+        # - macos-14: mac arm64
         # - windows-latest: windows x64
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-13, macos-latest, windows-latest]
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-13, macos-14, windows-latest]
 
     steps:
     # Check out repository with submodules for C++ extensions
