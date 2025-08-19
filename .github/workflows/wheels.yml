@@ -38,7 +38,8 @@ jobs:
     name: Wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false  # Build all platforms even if one fails
+      #fail-fast: false  # Build all platforms even if one fails
+      fail-fast: true  # Build all platforms even if one fails
       matrix:
         # Runners https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#standard-github-hosted-runners-for-public-repositories
         # - ubuntu-latest: ubuntu x64
