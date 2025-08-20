@@ -1,6 +1,6 @@
 import time
 import numpy as np
-from .lotf_ext import search_cpp, get_unordered_container_type
+from .lotf_ext import filter_cpp, get_unordered_container_type
 
 # Optional faiss import with graceful fallback
 try:
@@ -235,7 +235,7 @@ def build_neighbor_lists(
     batch_size: int,
     verbose: bool,
 ) -> tuple[list, list | None]:
-    """Build raw neighbor lists (:math:`\{\mathcal{L}_n\}_{n=1}^N` in the paper). This function is used inside :class:`CutoffTable`. End users don't need to call this usually.
+    r"""Build raw neighbor lists (:math:`\{\mathcal{L}_n\}_{n=1}^N` in the paper). This function is used inside :class:`CutoffTable`. End users don't need to call this usually.
 
     Args:
         X: 2D numpy array of dataset vectors
@@ -320,7 +320,7 @@ def build_neighbor_lists(
 
 
 class CutoffTable:
-    """Cutoff table for diversity-aware filtering of search results. The wrapper class for :math:`\{\mathcal{L}_n\}_{n=1}^N` in the paper.
+    r"""Cutoff table for diversity-aware filtering of search results. The wrapper class for :math:`\{\mathcal{L}_n\}_{n=1}^N` in the paper.
 
     Precomputes neighbor lists within epsilon distance for efficient filtering.
     Used to remove similar items from search results to increase diversity.
@@ -533,7 +533,7 @@ class CutoffTable:
         diverse_ids = np.empty((Nq, final_k), dtype=np.int64)
 
         # Call C++ implementation for efficient filtering
-        search_cpp(
+        filter_cpp(
             self.flattened_neighbors,
             self.neighbor_offsets,
             dists,

@@ -47,7 +47,7 @@ const char* get_unordered_container_type() {
  * @param diverse_dists Output diverse distances (Nq x final_k)
  * @param diverse_ids Output diverse IDs (Nq x final_k)
  */
-void search_cpp(
+void filter_cpp(
     nb::ndarray<const int64_t, nb::ndim<1>, nb::device::cpu> flattened_neighbors,
     nb::ndarray<const int64_t, nb::ndim<1>, nb::device::cpu> neighbor_offsets,
     nb::ndarray<const float, nb::ndim<2>, nb::device::cpu> dists,
@@ -164,7 +164,7 @@ NB_MODULE(lotf_ext, m) {
         "Returns the type of unordered container implementation being used");
     
     // Main diversity filtering function
-    m.def("search_cpp", &search_cpp, 
+    m.def("filter_cpp", &filter_cpp, 
         "flattened_neighbors"_a,   // flattened cutoff table
         "neighbor_offsets"_a,      // cumulative lengths
         "dists"_a,                // candidate distances
