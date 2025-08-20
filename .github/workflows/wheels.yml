@@ -54,35 +54,36 @@ jobs:
       with:
         submodules: true
 
-    # Get latest Boost version info  
-    - name: Get Boost version
+    - name: Get latest Boost release
       id: boost
-      run: |
-        # Try to get latest, fallback to known stable version
-        BOOST_FILE=$(curl -s https://api.github.com/repos/boostorg/boost/releases/latest | grep -o '"tag_name"[^,]*' | cut -d'"' -f4 | sed 's/^/boost-/' | sed 's/$/-b2-nodocs.tar.gz/' || echo "boost-1.86.0-b2-nodocs.tar.gz")
-        echo "file=$BOOST_FILE" >> $GITHUB_OUTPUT
-        echo "Latest Boost file: $BOOST_FILE"
-      shell: bash
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { data } = await github.rest.repos.getLatestRelease({
+            owner: 'boostorg',
+            repo: 'boost'
+          });
+          core.setOutput('tar_url', `https://github.com/boostorg/boost/archive/refs/tags/${data.tag_name}.tar.gz`);
 
     # Build wheels for multiple Python versions and architectures
     - uses: pypa/cibuildwheel@v3.1
       env:
         # Linux: Install latest Boost headers
         CIBW_BEFORE_ALL_LINUX: >
-          echo "Installing Boost ${{ steps.boost.outputs.file }}" &&
-          curl -L "https://github.com/boostorg/boost/releases/latest/download/${{ steps.boost.outputs.file }}" | tar xz --strip-components=1 &&
+          echo "Installing Boost from archive" &&
+          curl -L "${{ steps.boost.outputs.tar_url }}" | tar xz --strip-components=1 &&
           cp -r boost /usr/local/include/ &&
           echo "Boost installation complete"
         # macOS: Install latest Boost headers  
         CIBW_BEFORE_ALL_MACOS: >
-          echo "Installing Boost ${{ steps.boost.outputs.file }}" &&
-          curl -L "https://github.com/boostorg/boost/releases/latest/download/${{ steps.boost.outputs.file }}" | tar xz --strip-components=1 &&
+          echo "Installing Boost from archive" &&
+          curl -L "${{ steps.boost.outputs.tar_url }}" | tar xz --strip-components=1 &&
           cp -r boost /usr/local/include/ &&
           echo "Boost installation complete"
         # Windows: Install latest Boost headers
         CIBW_BEFORE_ALL_WINDOWS: >
-          echo Installing Boost ${{ steps.boost.outputs.file }} &&
-          curl -L "https://github.com/boostorg/boost/releases/latest/download/${{ steps.boost.outputs.file }}" -o boost.tar.gz &&
+          echo Installing Boost from archive &&
+          curl -L "${{ steps.boost.outputs.tar_url }}" -o boost.tar.gz &&
           tar -xzf boost.tar.gz --strip-components=1 &&
           xcopy "boost" "C:\boost\include\boost" /E /I /Y &&
           echo Checking Boost installation &&
