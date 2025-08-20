@@ -54,25 +54,34 @@ jobs:
       with:
         submodules: true
 
+    # Get latest Boost version info
+    - name: Get Boost version
+      id: boost
+      run: |
+        BOOST_FILE=$(curl -s https://api.github.com/repos/boostorg/boost/releases/latest | grep -o '"name": "[^"]*-b2-nodocs\.tar\.gz"' | cut -d'"' -f4)
+        echo "file=$BOOST_FILE" >> $GITHUB_OUTPUT
+        echo "Latest Boost file: $BOOST_FILE"
+      shell: bash
+
     # Build wheels for multiple Python versions and architectures
     - uses: pypa/cibuildwheel@v3.1
       env:
         # Linux: Install latest Boost headers
         CIBW_BEFORE_ALL_LINUX: >
-          echo "Installing latest Boost headers" &&
-          curl -L "https://github.com/boostorg/boost/releases/latest/download/boost-nodocs.tar.gz" | tar xz --strip-components=1 &&
+          echo "Installing Boost ${{ steps.boost.outputs.file }}" &&
+          curl -L "https://github.com/boostorg/boost/releases/latest/download/${{ steps.boost.outputs.file }}" | tar xz --strip-components=1 &&
           cp -r boost /usr/local/include/ &&
           echo "Boost installation complete"
         # macOS: Install latest Boost headers  
         CIBW_BEFORE_ALL_MACOS: >
-          echo "Installing latest Boost headers" &&
-          curl -L "https://github.com/boostorg/boost/releases/latest/download/boost-nodocs.tar.gz" | tar xz --strip-components=1 &&
+          echo "Installing Boost ${{ steps.boost.outputs.file }}" &&
+          curl -L "https://github.com/boostorg/boost/releases/latest/download/${{ steps.boost.outputs.file }}" | tar xz --strip-components=1 &&
           cp -r boost /usr/local/include/ &&
           echo "Boost installation complete"
         # Windows: Install latest Boost headers
         CIBW_BEFORE_ALL_WINDOWS: >
-          echo Installing latest Boost headers &&
-          curl -L "https://github.com/boostorg/boost/releases/latest/download/boost-nodocs.tar.gz" -o boost.tar.gz &&
+          echo Installing Boost ${{ steps.boost.outputs.file }} &&
+          curl -L "https://github.com/boostorg/boost/releases/latest/download/${{ steps.boost.outputs.file }}" -o boost.tar.gz &&
           tar -xzf boost.tar.gz --strip-components=1 &&
           xcopy "boost" "C:\boost\include\boost" /E /I /Y &&
           echo Boost installation complete
