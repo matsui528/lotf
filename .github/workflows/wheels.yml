@@ -57,7 +57,6 @@ jobs:
     # Build wheels for multiple Python versions and architectures
     - uses: pypa/cibuildwheel@v3.1
       env:
-        CIBW_TEST_REQUIRES: "numpy"
         CIBW_TEST_COMMAND: "python -c \"import lotf; print('=== Backend Information ==='); lotf.print_backend()\""
 
     # Ensure build process didn't modify source files

@@ -33,6 +33,24 @@ find_package(Python 3.10
 # Import nanobind through CMake's find_package mechanism
 find_package(nanobind CONFIG REQUIRED)
 
+# Try to find Boost headers for better performance
+# Check common Boost installation paths
+# [Note] We can use boost on Linux without this description, but it was necessary when creating wheels for Mac or Windows.
+set(BOOST_SEARCH_PATHS
+    /opt/homebrew/include          # macOS Homebrew (Apple Silicon)
+    /usr/local/include             # macOS Homebrew (Intel) / Linux
+    /usr/include                   # System package managers
+    C:/vcpkg/installed/x64-windows/include  # Windows vcpkg
+)
+
+foreach(BOOST_PATH ${BOOST_SEARCH_PATHS})
+    if(EXISTS "${BOOST_PATH}/boost/unordered/unordered_flat_map.hpp")
+        message(STATUS "Found Boost headers at: ${BOOST_PATH}")
+        include_directories(${BOOST_PATH})
+        break()
+    endif()
+endforeach()
+
 # We are now ready to compile the actual extension module
 nanobind_add_module(
   # Name of the extension
