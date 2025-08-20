@@ -58,14 +58,8 @@ jobs:
     - name: Get Boost version
       id: boost
       run: |
-        BOOST_FILE=$(curl -s https://api.github.com/repos/boostorg/boost/releases/latest | python3 -c "
-        import sys, json, re
-        data = json.load(sys.stdin)
-        for asset in data['assets']:
-            if re.match(r'.*-b2-nodocs\.tar\.gz$', asset['name']):
-                print(asset['name'])
-                break
-        ")
+        # Try to get latest, fallback to known stable version
+        BOOST_FILE=$(curl -s https://api.github.com/repos/boostorg/boost/releases/latest | grep -o '"tag_name"[^,]*' | cut -d'"' -f4 | sed 's/^/boost-/' | sed 's/$/-b2-nodocs.tar.gz/' || echo "boost-1.86.0-b2-nodocs.tar.gz")
         echo "file=$BOOST_FILE" >> $GITHUB_OUTPUT
         echo "Latest Boost file: $BOOST_FILE"
       shell: bash
