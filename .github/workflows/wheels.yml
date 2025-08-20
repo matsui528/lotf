@@ -63,29 +63,32 @@ jobs:
             owner: 'boostorg',
             repo: 'boost'
           });
-          core.setOutput('tar_url', `https://github.com/boostorg/boost/archive/refs/tags/${data.tag_name}.tar.gz`);
+          const version = data.tag_name.replace(/^boost-/, '');
+          const versionUnderscore = version.replace(/\./g, '_');
+          core.setOutput('version', version);
+          core.setOutput('tar_url', `https://archives.boost.io/release/${version}/source/boost_${versionUnderscore}.tar.bz2`);
 
     # Build wheels for multiple Python versions and architectures
     - uses: pypa/cibuildwheel@v3.1
       env:
         # Linux: Install latest Boost headers
         CIBW_BEFORE_ALL_LINUX: >
-          echo "Installing Boost from archive" &&
-          curl -L "${{ steps.boost.outputs.tar_url }}" | tar xz &&
-          cp -r boost-*/boost /usr/local/include/ &&
+          echo "Installing Boost ${{ steps.boost.outputs.version }}" &&
+          curl -L "${{ steps.boost.outputs.tar_url }}" | tar xj --strip-components=1 &&
+          cp -r boost /usr/local/include/ &&
           echo "Boost installation complete"
         # macOS: Install latest Boost headers  
         CIBW_BEFORE_ALL_MACOS: >
-          echo "Installing Boost from archive" &&
-          curl -L "${{ steps.boost.outputs.tar_url }}" | tar xz &&
-          cp -r boost-*/boost /usr/local/include/ &&
+          echo "Installing Boost ${{ steps.boost.outputs.version }}" &&
+          curl -L "${{ steps.boost.outputs.tar_url }}" | tar xj --strip-components=1 &&
+          cp -r boost /usr/local/include/ &&
           echo "Boost installation complete"
         # Windows: Install latest Boost headers
         CIBW_BEFORE_ALL_WINDOWS: >
-          echo Installing Boost from archive &&
-          curl -L "${{ steps.boost.outputs.tar_url }}" -o boost.tar.gz &&
-          tar -xzf boost.tar.gz &&
-          for /d %%i in (boost-*) do xcopy "%%i\boost" "C:\boost\include\boost" /E /I /Y &&
+          echo Installing Boost ${{ steps.boost.outputs.version }} &&
+          curl -L "${{ steps.boost.outputs.tar_url }}" -o boost.tar.bz2 &&
+          tar -xjf boost.tar.bz2 --strip-components=1 &&
+          xcopy "boost" "C:\boost\include\boost" /E /I /Y &&
           echo Checking Boost installation &&
           if exist "C:\boost\include\boost\unordered\unordered_flat_map.hpp" (echo Boost unordered_flat_map found at C:\boost\include\boost\unordered\) else (echo WARNING: Boost unordered_flat_map NOT found) &&
           echo Boost installation complete
