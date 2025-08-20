@@ -13,7 +13,7 @@ api
 
 ## Citation
 ```
-@inproceedings{mtasui2025cvpr,
+@inproceedings{matsui2025cvpr,
     author    = {Yusuke Matsui},
     title     = {LotusFilter: Fast Diverse Nearest Neighbor Search via a Learned Cutoff Table},
     booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},

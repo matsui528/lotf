@@ -4,7 +4,7 @@ LotusFilter (`lotf`) is a library designed for efficient search result diversifi
 The features of LotusFilter are as follows:
 
 - **Lightweight**: LotusFilter is extremely fast, taking less than 0.1 milliseconds per query vector in most cases.
-- **Independence**: By precomputing and storing the CutoffTable, LotusFilter can be treated as a completely independent post-processing module. In other words, LotsuFilter does not need to retain the original data (the set of vectors) to achieve diverse search.
+- **Independence**: By precomputing and storing the CutoffTable, LotusFilter can be treated as a completely independent post-processing module. In other words, LotusFilter does not need to retain the original data (the set of vectors) to achieve diverse search.
 - **Flexibility**: Since we assume ANN search is achieved by faiss, LotusFilter functions as a complete post-processing step for various faiss indexes. 
 - **Simplicity**: LotusFilter is implemented as a single CutoffTable class, making it very easy to use. 
 

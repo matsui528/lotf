@@ -137,7 +137,7 @@ void filter_cpp(
                     ids_final_idx = final_k;
                     break;
                 }
-                // L6 in Alg 2.Remove similar item from available set
+                // L6 in Alg 2. Remove similar item from available set
                 items_set.erase(i);
             }
  

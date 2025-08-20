@@ -88,7 +88,7 @@ print(f"Diverse results: {diverse_ids}")
     # Ubuntu 24.04+
     sudo apt install libboost-dev
     
-    # macOS (note tested)
+    # macOS (not tested)
     brew install boost
     
     # Windows (with vcpkg)

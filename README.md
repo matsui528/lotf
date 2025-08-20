@@ -68,7 +68,7 @@ print(f"Diverse results: {diverse_ids}")
 If you use LotusFilter in your research, please cite our CVPR 2025 paper:
 
 ```bibtex
-@inproceedings{mtasui2025cvpr,
+@inproceedings{matsui2025cvpr,
     author    = {Yusuke Matsui},
     title     = {LotusFilter: Fast Diverse Nearest Neighbor Search via a Learned Cutoff Table},
     booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
