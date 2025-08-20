@@ -71,21 +71,21 @@ jobs:
         # Linux: Install latest Boost headers
         CIBW_BEFORE_ALL_LINUX: >
           echo "Installing Boost from archive" &&
-          curl -L "${{ steps.boost.outputs.tar_url }}" | tar xz --strip-components=1 &&
-          cp -r boost /usr/local/include/ &&
+          curl -L "${{ steps.boost.outputs.tar_url }}" | tar xz &&
+          cp -r boost-*/boost /usr/local/include/ &&
           echo "Boost installation complete"
         # macOS: Install latest Boost headers  
         CIBW_BEFORE_ALL_MACOS: >
           echo "Installing Boost from archive" &&
-          curl -L "${{ steps.boost.outputs.tar_url }}" | tar xz --strip-components=1 &&
-          cp -r boost /usr/local/include/ &&
+          curl -L "${{ steps.boost.outputs.tar_url }}" | tar xz &&
+          cp -r boost-*/boost /usr/local/include/ &&
           echo "Boost installation complete"
         # Windows: Install latest Boost headers
         CIBW_BEFORE_ALL_WINDOWS: >
           echo Installing Boost from archive &&
           curl -L "${{ steps.boost.outputs.tar_url }}" -o boost.tar.gz &&
-          tar -xzf boost.tar.gz --strip-components=1 &&
-          xcopy "boost" "C:\boost\include\boost" /E /I /Y &&
+          tar -xzf boost.tar.gz &&
+          for /d %%i in (boost-*) do xcopy "%%i\boost" "C:\boost\include\boost" /E /I /Y &&
           echo Checking Boost installation &&
           if exist "C:\boost\include\boost\unordered\unordered_flat_map.hpp" (echo Boost unordered_flat_map found at C:\boost\include\boost\unordered\) else (echo WARNING: Boost unordered_flat_map NOT found) &&
           echo Boost installation complete
