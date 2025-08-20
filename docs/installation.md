@@ -103,7 +103,7 @@ print(f"Diverse results: {diverse_ids}")
 You can check which backend is being used:
 
 ```bash
-python -c "import lotf; lotf.print_backend()"
+python -c "import lotf; print(lotf.backend())"
 ```
 
 Expected output for PyPI installation:

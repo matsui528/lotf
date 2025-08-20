@@ -35,7 +35,10 @@ find_package(nanobind CONFIG REQUIRED)
 
 # Try to find Boost headers for better performance
 # Check common Boost installation paths
-# [Note] We can use boost on Linux without this description, but it was necessary when creating wheels for Mac or Windows.
+# [Note] We can use boost on Linux without this description,
+# but it was necessary when creating wheels for Mac or Windows.
+# If Boost is not available, this description is simply ignored.
+
 set(BOOST_SEARCH_PATHS
     /opt/homebrew/include          # macOS Homebrew (Apple Silicon)
     /usr/local/include             # macOS Homebrew (Intel) / Linux

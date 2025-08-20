@@ -12,23 +12,27 @@ except ImportError:
     faiss = None
 
 
-def print_backend() -> None:
-    """Print information about available backends.
+def backend() -> str:
+    """Get information about available backends.
 
     Shows which backend implementations are being used:
 
     - div_score: Uses Faiss for pairwise distance computation if available, otherwise falls back to NumPy
     - filter: Uses boost::unordered_flat_map/set if available for faster filtering, otherwise uses std::unordered_map/set
 
+    Returns:
+        str: Backend information formatted as multi-line string
+
     Example::
 
-        lotf.print_backend()
+        print(lotf.backend())
         > div_score: Faiss
         > filter: boost::unordered_flat_map/set
 
     """
-    print(f"div_score: {'Faiss' if HAS_FAISS else 'NumPy'}")
-    print(f"filter: {get_unordered_container_type()}")
+    div_score_backend = 'Faiss' if HAS_FAISS else 'NumPy'
+    filter_backend = get_unordered_container_type()
+    return f"div_score: {div_score_backend}\nfilter: {filter_backend}"
 
 
 def div_score(
