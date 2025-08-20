@@ -85,11 +85,11 @@ jobs:
           echo "Installing Boost via Homebrew"
           brew install boost
           echo "Boost installation complete"
-        CIBW_ENVIRONMENT_MACOS: "CMAKE_PREFIX_PATH=/opt/homebrew;/usr/local"
+        CIBW_ENVIRONMENT_MACOS: "CMAKE_PREFIX_PATH=/opt/homebrew:/usr/local"
         MACOSX_DEPLOYMENT_TARGET: "10.15"
 
         # Windows: Install Boost via pre-installed vcpkg
-        CIBW_BEFORE_ALL_WINDOWS: |
+        CIBW_BEFORE_ALL_WINDOWS: >
           echo Installing Boost unordered via vcpkg &&
           vcpkg install boost-unordered:x64-windows &&
           echo Checking Boost installation &&
