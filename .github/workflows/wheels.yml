@@ -73,30 +73,26 @@ jobs:
     - uses: pypa/cibuildwheel@v2.21
       env:
         # Linux: Install latest Boost headers
-        CIBW_BEFORE_ALL_LINUX: >
-          echo "Installing Boost ${{ steps.boost.outputs.version }}" &&
-          curl -L "${{ steps.boost.outputs.tar_url }}" | tar xj --strip-components=1 &&
-          cp -r boost /usr/local/include/ &&
+        CIBW_BEFORE_ALL_LINUX: |
+          echo "Installing Boost ${{ steps.boost.outputs.version }}"
+          curl -L "${{ steps.boost.outputs.tar_url }}" | tar xj --strip-components=1
+          cp -r boost /usr/local/include/
           echo "Boost installation complete"
-        # macOS: Install latest Boost headers  
-        CIBW_BEFORE_ALL_MACOS: >
-          echo "Cleaning environment and installing Boost ${{ steps.boost.outputs.version }}" &&
-          rm -rf /tmp/boost* || true &&
-          brew update || true &&
-          curl -L --retry 3 --retry-delay 5 --connect-timeout 30 "${{ steps.boost.outputs.tar_url }}" | tar xj --strip-components=1 &&
-          cp -r boost /usr/local/include/ &&
+        # macOS: Install latest Boost headers via Homebrew
+        CIBW_BEFORE_ALL_MACOS: |
+          echo "Installing Boost via Homebrew"
+          brew install boost
           echo "Boost installation complete"
-        # Windows: Install latest Boost headers
-        CIBW_BEFORE_ALL_WINDOWS: >
-          echo Installing Boost ${{ steps.boost.outputs.version }} &&
-          curl -L "${{ steps.boost.outputs.tar_url }}" -o boost.tar.bz2 &&
-          tar -xjf boost.tar.bz2 --strip-components=1 &&
-          xcopy "boost" "C:\boost\include\boost" /E /I /Y &&
-          echo Checking Boost installation &&
-          if exist "C:\boost\include\boost\unordered\unordered_flat_map.hpp" (echo Boost unordered_flat_map found at C:\boost\include\boost\unordered\) else (echo WARNING: Boost unordered_flat_map NOT found) &&
+        # Windows: Install Boost via pre-installed vcpkg
+        CIBW_BEFORE_ALL_WINDOWS: |
+          echo Installing Boost unordered via vcpkg
+          vcpkg install boost-unordered:x64-windows
+          echo Checking Boost installation
+          if exist "%VCPKG_INSTALLATION_ROOT%\installed\x64-windows\include\boost\unordered\unordered_flat_map.hpp" (echo Boost unordered_flat_map found) else (echo WARNING: Boost unordered_flat_map NOT found)
           echo Boost installation complete
-        CIBW_ENVIRONMENT_WINDOWS: "BOOST_ROOT=C:\\boost BOOST_INCLUDEDIR=C:\\boost\\include CMAKE_PREFIX_PATH=C:\\boost"
-        MACOSX_DEPLOYMENT_TARGET: "10.14"
+        # CIBW_ENVIRONMENT_MACOS: "CMAKE_PREFIX_PATH=/opt/homebrew;/usr/local"
+        # CIBW_ENVIRONMENT_WINDOWS: "CMAKE_TOOLCHAIN_FILE=%VCPKG_INSTALLATION_ROOT%\\scripts\\buildsystems\\vcpkg.cmake"
+        MACOSX_DEPLOYMENT_TARGET: "10.15"
         CIBW_TEST_COMMAND: "python -c \"import lotf; backend_info = lotf.backend(); print('=== Backend Information ==='); print(backend_info); assert 'boost::unordered_flat_map/set' in backend_info, f'Expected boost backend but got: {backend_info}'\""
 
 
