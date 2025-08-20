@@ -70,7 +70,7 @@ jobs:
           core.setOutput('tar_url', `https://archives.boost.io/release/${version}/source/boost_${versionUnderscore}.tar.bz2`);
 
     # Build wheels for multiple Python versions and architectures
-    - uses: pypa/cibuildwheel@v2.21
+    - uses: pypa/cibuildwheel@v3.1
       env:
 
         # Linux: Install latest Boost headers
@@ -85,7 +85,7 @@ jobs:
           echo "Installing Boost via Homebrew"
           brew install boost
           echo "Boost installation complete"
-        CIBW_ENVIRONMENT_MACOS: "CMAKE_PREFIX_PATH=/opt/homebrew:/usr/local"
+        CIBW_ENVIRONMENT_MACOS: "CPPFLAGS=-I/opt/homebrew/include -I/usr/local/include LDFLAGS=-L/opt/homebrew/lib -L/usr/local/lib"
         MACOSX_DEPLOYMENT_TARGET: "10.15"
 
         # Windows: Install Boost via pre-installed vcpkg
@@ -95,7 +95,7 @@ jobs:
           echo Checking Boost installation &&
           if exist "%VCPKG_INSTALLATION_ROOT%\installed\x64-windows\include\boost\unordered\unordered_flat_map.hpp" (echo Boost unordered_flat_map found) else (echo WARNING: Boost unordered_flat_map NOT found) &&
           echo Boost installation complete
-        CIBW_ENVIRONMENT_WINDOWS: "CMAKE_TOOLCHAIN_FILE=%VCPKG_INSTALLATION_ROOT%\\scripts\\buildsystems\\vcpkg.cmake"
+        CIBW_ENVIRONMENT_WINDOWS: "CMAKE_TOOLCHAIN_FILE=%VCPKG_INSTALLATION_ROOT%\\scripts\\buildsystems\\vcpkg.cmake CPPFLAGS=-I%VCPKG_INSTALLATION_ROOT%\\installed\\x64-windows\\include"
         CIBW_TEST_COMMAND: "python -c \"import lotf; backend_info = lotf.backend(); print('=== Backend Information ==='); print(backend_info); assert 'boost::unordered_flat_map/set' in backend_info, f'Expected boost backend but got: {backend_info}'\""
 
 
