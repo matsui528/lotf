@@ -40,10 +40,10 @@ find_package(nanobind CONFIG REQUIRED)
 # If Boost is not available, this description is simply ignored.
 
 set(BOOST_SEARCH_PATHS
-    /opt/homebrew/include          # macOS Homebrew (Apple Silicon)
-    /usr/local/include             # macOS Homebrew (Intel) / Linux
+#    /opt/homebrew/include          # macOS Homebrew (Apple Silicon)
+#    /usr/local/include             # macOS Homebrew (Intel) / Linux
     /usr/include                   # System package managers
-    C:/vcpkg/installed/x64-windows/include  # Windows vcpkg
+#    C:/vcpkg/installed/x64-windows/include  # Windows vcpkg
 )
 
 foreach(BOOST_PATH ${BOOST_SEARCH_PATHS})
