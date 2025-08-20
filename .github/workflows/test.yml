@@ -69,5 +69,5 @@ jobs:
     - name: Test
       shell: bash -el {0}
       run: |
-        python -c "import lotf; lotf.print_backend()"
+        python -c "import lotf; print(lotf.backend())"
         python -m pytest tests
