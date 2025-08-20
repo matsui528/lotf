@@ -30,7 +30,7 @@ def backend() -> str:
         > filter: boost::unordered_flat_map/set
 
     """
-    div_score_backend = 'Faiss' if HAS_FAISS else 'NumPy'
+    div_score_backend = "Faiss" if HAS_FAISS else "NumPy"
     filter_backend = get_unordered_container_type()
     return f"div_score: {div_score_backend}\nfilter: {filter_backend}"
 
