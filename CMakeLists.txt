@@ -39,21 +39,21 @@ find_package(nanobind CONFIG REQUIRED)
 # but it was necessary when creating wheels for Mac or Windows.
 # If Boost is not available, this description is simply ignored.
 
-# set(BOOST_SEARCH_PATHS
-#     /opt/homebrew/include          # macOS Homebrew (Apple Silicon)
-#     /usr/local/include             # macOS Homebrew (Intel) / Linux
-#     /usr/include                   # System package managers
-#     $ENV{VCPKG_INSTALLATION_ROOT}/installed/x64-windows/include  # Windows vcpkg
-#     C:/vcpkg/installed/x64-windows/include  # Windows vcpkg (fallback)
-# )
+set(BOOST_SEARCH_PATHS
+    /opt/homebrew/include          # macOS Homebrew (Apple Silicon)
+    /usr/local/include             # macOS Homebrew (Intel) / Linux
+    /usr/include                   # System package managers
+    $ENV{VCPKG_INSTALLATION_ROOT}/installed/x64-windows/include  # Windows vcpkg
+    C:/vcpkg/installed/x64-windows/include  # Windows vcpkg (fallback)
+)
 
-# foreach(BOOST_PATH ${BOOST_SEARCH_PATHS})
-#     if(EXISTS "${BOOST_PATH}/boost/unordered/unordered_flat_map.hpp")
-#         message(STATUS "Found Boost headers at: ${BOOST_PATH}")
-#         include_directories(${BOOST_PATH})
-#         break()
-#     endif()
-# endforeach()
+foreach(BOOST_PATH ${BOOST_SEARCH_PATHS})
+    if(EXISTS "${BOOST_PATH}/boost/unordered/unordered_flat_map.hpp")
+        message(STATUS "Found Boost headers at: ${BOOST_PATH}")
+        include_directories(${BOOST_PATH})
+        break()
+    endif()
+endforeach()
 
 # We are now ready to compile the actual extension module
 nanobind_add_module(
