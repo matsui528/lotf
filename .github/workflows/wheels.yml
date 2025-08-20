@@ -38,8 +38,7 @@ jobs:
     name: Wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
-      #fail-fast: false  # Build all platforms even if one fails
-      fail-fast: true  # Build all platforms even if one fails
+      fail-fast: false  # Build all platforms even if one fails
       matrix:
         # Runners https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#standard-github-hosted-runners-for-public-repositories
         # - ubuntu-latest: ubuntu x64
@@ -57,6 +56,9 @@ jobs:
 
     # Build wheels for multiple Python versions and architectures
     - uses: pypa/cibuildwheel@v3.1
+      env:
+        CIBW_TEST_REQUIRES: "numpy"
+        CIBW_TEST_COMMAND: "python -c \"import lotf; print('=== Backend Information ==='); lotf.print_backend()\""
 
     # Ensure build process didn't modify source files
     - name: Verify clean directory
@@ -70,20 +72,6 @@ jobs:
         path: wheelhouse/*.whl
         name: dist-${{ matrix.os }}
 
-    # Test wheel installation and check backend configuration  
-    - name: Test wheel and check Boost backend
-      run: |
-        # Use python3 on macOS, python on others
-        if [[ "$RUNNER_OS" == "macOS" ]]; then
-          PYTHON_CMD="python3"
-        else
-          PYTHON_CMD="python"
-        fi
-        
-        $PYTHON_CMD -m pip install numpy
-        $PYTHON_CMD -m pip install wheelhouse/*.whl --force-reinstall --no-deps --no-index --find-links wheelhouse
-        $PYTHON_CMD -c "import lotf; print('=== Backend Information ==='); lotf.print_backend()"
-      shell: bash
 
   # Upload to PyPI only when a GitHub release is published
   upload_all:
