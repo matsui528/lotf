@@ -56,7 +56,7 @@ jobs:
 
     - name: Get latest Boost release
       id: boost
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: |
           const { data } = await github.rest.repos.getLatestRelease({
