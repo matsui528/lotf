@@ -69,7 +69,7 @@ jobs:
           core.setOutput('tar_url', `https://archives.boost.io/release/${version}/source/boost_${versionUnderscore}.tar.bz2`);
 
     # Build wheels for multiple Python versions and architectures
-    - uses: pypa/cibuildwheel@v3.1
+    - uses: pypa/cibuildwheel@v3.2
       env:
 
         # Linux: Install latest Boost headers
