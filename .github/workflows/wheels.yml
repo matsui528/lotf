@@ -43,10 +43,10 @@ jobs:
         # Runners https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#standard-github-hosted-runners-for-public-repositories
         # - ubuntu-latest: ubuntu x64
         # - ubuntu-24.04-arm: ubuntu arm64
-        # - macos-13: mac intel
         # - macos-14: mac arm64
+        # - macos-15-intel: mac intel
         # - windows-latest: windows x64
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-13, macos-14, windows-latest]
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-14, macos-15-intel, windows-latest]
 
     steps:
     # Check out repository with submodules for C++ extensions
