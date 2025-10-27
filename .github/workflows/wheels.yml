@@ -28,7 +28,7 @@ jobs:
       run: pipx run twine check dist/*
 
     # Upload source distribution as artifact
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       with:
         name: dist-sdist
         path: dist/*.tar.gz
@@ -107,7 +107,7 @@ jobs:
 
     # Upload built wheels as artifacts
     - name: Upload wheels
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         path: wheelhouse/*.whl
         name: dist-${{ matrix.os }}
@@ -126,7 +126,7 @@ jobs:
 
     steps:
     # Download all built artifacts (wheels and sdist)
-    - uses: actions/download-artifact@v5
+    - uses: actions/download-artifact@v6
       with:
         path: dist
         pattern: dist-*
