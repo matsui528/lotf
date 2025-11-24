@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     # Check out repository with submodules for complete source
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         submodules: true
 
@@ -50,7 +50,7 @@ jobs:
 
     steps:
     # Check out repository with submodules for C++ extensions
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         submodules: true
 
@@ -69,7 +69,7 @@ jobs:
           core.setOutput('tar_url', `https://archives.boost.io/release/${version}/source/boost_${versionUnderscore}.tar.bz2`);
 
     # Build wheels for multiple Python versions and architectures
-    - uses: pypa/cibuildwheel@v3.2
+    - uses: pypa/cibuildwheel@v3.3
       env:
 
         # Linux: Install latest Boost headers

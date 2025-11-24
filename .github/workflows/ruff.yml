@@ -16,7 +16,7 @@ jobs:
       contents: write  # Required to push auto-fixes on main branch
       
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         
