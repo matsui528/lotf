@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     # Check out repository with submodules for complete source
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         submodules: true
 
@@ -28,7 +28,7 @@ jobs:
       run: pipx run twine check dist/*
 
     # Upload source distribution as artifact
-    - uses: actions/upload-artifact@v5
+    - uses: actions/upload-artifact@v6
       with:
         name: dist-sdist
         path: dist/*.tar.gz
@@ -50,7 +50,7 @@ jobs:
 
     steps:
     # Check out repository with submodules for C++ extensions
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         submodules: true
 
@@ -69,7 +69,7 @@ jobs:
           core.setOutput('tar_url', `https://archives.boost.io/release/${version}/source/boost_${versionUnderscore}.tar.bz2`);
 
     # Build wheels for multiple Python versions and architectures
-    - uses: pypa/cibuildwheel@v3.2
+    - uses: pypa/cibuildwheel@v3.3
       env:
 
         # Linux: Install latest Boost headers
@@ -107,7 +107,7 @@ jobs:
 
     # Upload built wheels as artifacts
     - name: Upload wheels
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         path: wheelhouse/*.whl
         name: dist-${{ matrix.os }}
@@ -126,7 +126,7 @@ jobs:
 
     steps:
     # Download all built artifacts (wheels and sdist)
-    - uses: actions/download-artifact@v6
+    - uses: actions/download-artifact@v7
       with:
         path: dist
         pattern: dist-*
