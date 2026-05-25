@@ -24,7 +24,7 @@ jobs:
 
     # Set up Miniconda environment with specified Python version
     - name: Set up Miniconda
-      uses: conda-incubator/setup-miniconda@v3
+      uses: conda-incubator/setup-miniconda@v4
       with:
         python-version: ${{ matrix.python-version }}
         mamba-version: "*"
