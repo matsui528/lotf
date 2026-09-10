@@ -37,8 +37,8 @@ import faiss
 import numpy as np
 
 # Prepare data
-Xb = np.random.rand(10000, 128).astype('float32')  # Database vectors
-Xq = np.random.rand(5, 128).astype('float32')      # Query vectors
+Xb = np.random.rand(10000, 128).astype("float32")  # Database vectors
+Xq = np.random.rand(5, 128).astype("float32")  # Query vectors
 
 # Step 1: Build Faiss index
 index = faiss.IndexFlatL2(Xb.shape[1])
@@ -55,9 +55,7 @@ candidate_dists, candidate_ids = index.search(Xq, candidate_k)
 # Step 4: Filter out candidates to obtain diverse results
 final_k = 100
 diverse_dists, diverse_ids = ctable.filter(
-    dists=candidate_dists, 
-    ids=candidate_ids, 
-    final_k=final_k
+    dists=candidate_dists, ids=candidate_ids, final_k=final_k
 )
 
 print(f"Diverse results: {diverse_ids}")

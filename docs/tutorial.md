@@ -22,23 +22,26 @@ import faiss
 np.set_printoptions(suppress=True, precision=4)  # Just for better visualization
 
 # Prepare database. 3 dim x 15 vectors
-Xb = np.array([
-    [0.12, 0.34, 0.56],
-    [0.78, 0.90, 0.11],
-    [0.21, 0.42, 0.67],
-    [0.21, 0.43, 0.66],
-    [0.21, 0.46, 0.65],
-    [0.20, 0.43, 0.64],
-    [0.67, 0.89, 0.12],
-    [0.34, 0.56, 0.78],
-    [0.55, 0.23, 0.88],
-    [0.31, 0.77, 0.45],
-    [0.62, 0.14, 0.39],
-    [0.81, 0.52, 0.27],
-    [0.09, 0.68, 0.73],
-    [0.90, 0.11, 0.23],
-    [0.45, 0.67, 0.89]
-], dtype=np.float32)
+Xb = np.array(
+    [
+        [0.12, 0.34, 0.56],
+        [0.78, 0.90, 0.11],
+        [0.21, 0.42, 0.67],
+        [0.21, 0.43, 0.66],
+        [0.21, 0.46, 0.65],
+        [0.20, 0.43, 0.64],
+        [0.67, 0.89, 0.12],
+        [0.34, 0.56, 0.78],
+        [0.55, 0.23, 0.88],
+        [0.31, 0.77, 0.45],
+        [0.62, 0.14, 0.39],
+        [0.81, 0.52, 0.27],
+        [0.09, 0.68, 0.73],
+        [0.90, 0.11, 0.23],
+        [0.45, 0.67, 0.89],
+    ],
+    dtype=np.float32,
+)
 
 # Query. 3 dim x 1 vector
 Xq = np.array([[0.21, 0.43, 0.65]], dtype=np.float32)
@@ -51,7 +54,7 @@ index.add(Xb)
 k = 5
 dists, ids = index.search(Xq, k)
 print(dists)  # [[0.0001 0.0002 0.0005 0.0009 0.0243]]
-print(ids)    # [[3 5 2 4 0]]
+print(ids)  # [[3 5 2 4 0]]
 ```
 
 In the above, we perform a nearest neighbor search with a query vector `Xq` against 15 three-dimensional vectors `Xb`. Here we retrieve the top `k=5` results.
@@ -62,6 +65,7 @@ By using the LotusFilter, we can make the results more diverse. Let's try it on 
 
 ```python
 import lotf
+
 epsilon = 0.01
 ctable = lotf.CutoffTable(X=Xb, index=index, epsilon=epsilon)
 ```
@@ -80,13 +84,11 @@ We now have more candidates. Next, filter the candidates by setting the final re
 # Diversification
 final_k = 5
 diverse_dists, diverse_ids = ctable.filter(
-    dists=candidate_dists,
-    ids=candidate_ids,
-    final_k=final_k
+    dists=candidate_dists, ids=candidate_ids, final_k=final_k
 )
 
 print(diverse_dists)  # [[0.0001 0.0243 0.0507 0.0833 0.1656]]
-print(diverse_ids)    # [[ 3  0  7 12  9]]
+print(diverse_ids)  # [[ 3  0  7 12  9]]
 ```
 
 Here, filtering is applied to the candidate results, producing diverse results. For example, `X[5]` has been excluded, and the results are more diverse.
@@ -184,9 +186,9 @@ import lotf
 import faiss
 
 # Prepare the data
-Xb = np.random.rand(10000, 128).astype('float32')  # Database vectors
-Xq = np.random.rand(100, 128).astype('float32')    # Query vectors
-Xt = np.random.rand(50, 128).astype('float32')     # Train vectors
+Xb = np.random.rand(10000, 128).astype("float32")  # Database vectors
+Xq = np.random.rand(100, 128).astype("float32")  # Query vectors
+Xt = np.random.rand(50, 128).astype("float32")  # Train vectors
 
 # Build faiss index
 index = faiss.IndexFlatL2(Xb.shape[1])
@@ -204,10 +206,12 @@ best_parm = lotf.optimize_epsilon(
     final_k=final_k,
     lam=lam,
 )
-print(best_param)  # {'epsilon': np.float32(15.420803), 'div_score': np.float32(6.9202075), 'L': np.float64(24.2842)}
+print(
+    best_param
+)  # {'epsilon': np.float32(15.420803), 'div_score': np.float32(6.9202075), 'L': np.float64(24.2842)}
 
 # Build cutoff table for diversity
-ctable = lotf.CutoffTable(X=Xb, index=index, epsilon=best_param['epsilon'])
+ctable = lotf.CutoffTable(X=Xb, index=index, epsilon=best_param["epsilon"])
 
 # Do search here
 ```
@@ -231,15 +235,15 @@ import pickle
 # Write
 ctable = lotf.CutoffTable(...)
 
-with open('cutoff_table.pkl', 'wb') as f:
+with open("cutoff_table.pkl", "wb") as f:
     pickle.dump(ctable, f)
 
 # Read
-with open('cutoff_table.pkl', 'rb') as f:
+with open("cutoff_table.pkl", "rb") as f:
     ctable_ = pickle.load(f)
 
 # Same
-assert(ctable == ctable_)
+assert ctable == ctable_
 ```
 
 ## Larger, real-world dataset
